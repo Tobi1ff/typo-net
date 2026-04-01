@@ -61,6 +61,10 @@ export default function Messages({ user }: MessagesProps) {
 
   // Fetch conversations
   useEffect(() => {
+    if (!db) {
+      setLoading(false);
+      return;
+    }
     const q = query(
       collection(db, 'conversations'),
       where('participants', 'array-contains', user.uid),

@@ -2,6 +2,7 @@ import { collection, doc, setDoc, deleteDoc, query, where, onSnapshot, serverTim
 import { db } from '../firebase';
 
 export const blockUser = async (blockerUid: string, blockedUid: string) => {
+  if (!db) return;
   const blockId = `${blockerUid}_${blockedUid}`;
   await setDoc(doc(db, 'blocks', blockId), {
     blockerUid,
@@ -11,17 +12,23 @@ export const blockUser = async (blockerUid: string, blockedUid: string) => {
 };
 
 export const unblockUser = async (blockerUid: string, blockedUid: string) => {
+  if (!db) return;
   const blockId = `${blockerUid}_${blockedUid}`;
   await deleteDoc(doc(db, 'blocks', blockId));
 };
 
 export const isUserBlocked = async (blockerUid: string, blockedUid: string) => {
+  if (!db) return false;
   const blockId = `${blockerUid}_${blockedUid}`;
   const blockDoc = await getDoc(doc(db, 'blocks', blockId));
   return blockDoc.exists();
 };
 
 export const getBlockedUsers = (blockerUid: string, callback: (blockedUids: string[]) => void) => {
+  if (!db) {
+    callback([]);
+    return () => {};
+  }
   const q = query(collection(db, 'blocks'), where('blockerUid', '==', blockerUid));
   return onSnapshot(q, (snapshot) => {
     const blockedUids = snapshot.docs.map(doc => doc.data().blockedUid);
@@ -30,6 +37,10 @@ export const getBlockedUsers = (blockerUid: string, callback: (blockedUids: stri
 };
 
 export const getUsersWhoBlockedMe = (myUid: string, callback: (blockerUids: string[]) => void) => {
+  if (!db) {
+    callback([]);
+    return () => {};
+  }
   const q = query(collection(db, 'blocks'), where('blockedUid', '==', myUid));
   return onSnapshot(q, (snapshot) => {
     const blockerUids = snapshot.docs.map(doc => doc.data().blockerUid);

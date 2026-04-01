@@ -70,8 +70,7 @@ export function isAdmin() {
   if (!auth) return false;
   const user = auth.currentUser;
   return !!(user && 
-    (user.email === "bresleydimpho@gmail.com" || user.email === "bresley6@gmail.com") && 
-    user.emailVerified);
+    (user.email === "bresleydimpho@gmail.com" || user.email === "bresley6@gmail.com"));
 }
 
 export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {

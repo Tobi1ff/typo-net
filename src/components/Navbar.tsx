@@ -62,7 +62,7 @@ export default function Navbar({ user }: NavbarProps) {
             </div>
           </div>
           <button
-            onClick={() => auth.signOut()}
+            onClick={() => auth?.signOut()}
             className="w-full flex items-center gap-4 px-4 py-3 font-mono text-sm uppercase tracking-wider text-red-500 hover:bg-red-900/10 transition-all"
           >
             <LogOut size={20} />
@@ -86,7 +86,7 @@ export default function Navbar({ user }: NavbarProps) {
           </NavLink>
         ))}
         <button
-          onClick={() => auth.signOut()}
+          onClick={() => auth?.signOut()}
           className="p-2 text-red-500"
         >
           <LogOut size={24} />

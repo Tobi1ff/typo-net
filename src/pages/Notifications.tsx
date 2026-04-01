@@ -16,6 +16,10 @@ export default function Notifications({ user }: NotificationsProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!db) {
+      setLoading(false);
+      return;
+    }
     const q = query(
       collection(db, 'notifications'),
       where('recipientUid', '==', user.uid),

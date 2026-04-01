@@ -25,6 +25,9 @@ async function startServer() {
   // Security Middlewares
   app.use(helmet({
     contentSecurityPolicy: false, // Disable for Vite dev
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: false,
+    frameguard: false,
   }));
   app.use(morgan('combined'));
   app.use(express.json());

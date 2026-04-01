@@ -23,6 +23,10 @@ export default function CreateProject({ user, onClose }: CreateProjectProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim() || !description.trim()) return;
+    if (!db) {
+      alert('Database connection not available.');
+      return;
+    }
 
     setLoading(true);
     try {

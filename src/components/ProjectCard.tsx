@@ -30,7 +30,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   }, [project.repoUrl]);
 
   useEffect(() => {
-    if (!currentUser) return;
+    if (!currentUser || !db) return;
     const likeRef = doc(db, 'projects', project.id, 'likes', currentUser.uid);
     const unsubscribe = onSnapshot(likeRef, (doc) => {
       setLiked(doc.exists());
@@ -41,7 +41,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   }, [project.id, currentUser]);
 
   useEffect(() => {
-    if (currentUser && currentUser.uid !== project.authorUid) {
+    if (currentUser && currentUser.uid !== project.authorUid && db) {
       const blockId = `${project.authorUid}_${currentUser.uid}`;
       const unsub = onSnapshot(doc(db, 'blocks', blockId), (doc) => {
         setIsBlockedByAuthor(doc.exists());
@@ -51,7 +51,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   }, [project.authorUid, currentUser]);
 
   useEffect(() => {
-    if (!currentUser) return;
+    if (!currentUser || !db) return;
     const followId = `${currentUser.uid}_${project.id}`;
     const followRef = doc(db, 'projectFollows', followId);
     const unsubscribe = onSnapshot(followRef, (doc) => {
@@ -71,7 +71,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   const handleLike = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!currentUser || isBlockedByAuthor) return;
+    if (!currentUser || isBlockedByAuthor || !db) return;
 
     const likeRef = doc(db, 'projects', project.id, 'likes', currentUser.uid);
     const projectRef = doc(db, 'projects', project.id);
@@ -96,7 +96,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   };
 
   const handleFollowProject = async (role: 'follower' | 'contributor') => {
-    if (!currentUser || isBlockedByAuthor) return;
+    if (!currentUser || isBlockedByAuthor || !db) return;
     const followId = `${currentUser.uid}_${project.id}`;
     const followRef = doc(db, 'projectFollows', followId);
 

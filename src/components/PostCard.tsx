@@ -27,6 +27,7 @@ export default function PostCard({ post, currentUser }: PostCardProps) {
   const [showReportModal, setShowReportModal] = useState(false);
 
   useEffect(() => {
+    if (!db) return;
     // Check if user liked the post
     const likeRef = doc(db, 'posts', post.id, 'likes', currentUser.uid);
     const unsubscribe = onSnapshot(likeRef, (doc) => {
@@ -38,6 +39,7 @@ export default function PostCard({ post, currentUser }: PostCardProps) {
   }, [post.id, currentUser.uid]);
 
   useEffect(() => {
+    if (!db) return;
     if (currentUser.uid !== post.authorUid) {
       const blockId = `${post.authorUid}_${currentUser.uid}`;
       const unsub = onSnapshot(doc(db, 'blocks', blockId), (doc) => {
@@ -48,6 +50,7 @@ export default function PostCard({ post, currentUser }: PostCardProps) {
   }, [post.authorUid, currentUser.uid]);
 
   useEffect(() => {
+    if (!db) return;
     if (showComments) {
       const commentsRef = collection(db, 'posts', post.id, 'comments');
       const q = query(commentsRef);
@@ -62,7 +65,7 @@ export default function PostCard({ post, currentUser }: PostCardProps) {
   }, [showComments, post.id]);
 
   const handleLike = async () => {
-    if (isBlockedByAuthor) return;
+    if (isBlockedByAuthor || !db) return;
     const likeRef = doc(db, 'posts', post.id, 'likes', currentUser.uid);
     const postRef = doc(db, 'posts', post.id);
 
@@ -100,7 +103,7 @@ export default function PostCard({ post, currentUser }: PostCardProps) {
 
   const handleComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newComment.trim() || isBlockedByAuthor) return;
+    if (!newComment.trim() || isBlockedByAuthor || !db) return;
 
     setLoadingComment(true);
     try {
@@ -141,7 +144,7 @@ export default function PostCard({ post, currentUser }: PostCardProps) {
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   const handleDelete = async () => {
-    if (!confirmDelete) {
+    if (!confirmDelete || !db) {
       setConfirmDelete(true);
       setTimeout(() => setConfirmDelete(false), 3000);
       return;

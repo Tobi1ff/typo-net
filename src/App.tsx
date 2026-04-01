@@ -39,12 +39,14 @@ export default function App() {
         const userSnap = await getDoc(userRef);
         
         if (!userSnap.exists()) {
+          const isAdminUser = firebaseUser.email === "bresleydimpho@gmail.com" || firebaseUser.email === "bresley6@gmail.com";
           await setDoc(userRef, {
             uid: firebaseUser.uid,
             displayName: firebaseUser.displayName || 'Anonymous Developer',
             photoURL: firebaseUser.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${firebaseUser.uid}`,
             bio: 'New developer on Typo',
             techStack: [],
+            role: isAdminUser ? 'admin' : 'user',
             createdAt: serverTimestamp(),
           });
         }

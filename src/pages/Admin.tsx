@@ -1,21 +1,59 @@
 import { useState, useEffect } from 'react';
-import { collection, query, getDocs, deleteDoc, doc, updateDoc, where, orderBy, limit } from 'firebase/firestore';
+import { collection, query, getDocs, deleteDoc, doc, updateDoc, where, orderBy, limit, getDoc } from 'firebase/firestore';
 import { db, auth, isAdmin } from '../firebase';
-import { Shield, Trash2, UserX, AlertTriangle, CheckCircle, Search, Filter } from 'lucide-react';
+import { Shield, Trash2, UserX, AlertTriangle, CheckCircle, Search, Filter, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState<'posts' | 'users' | 'projects' | 'reports'>('posts');
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [status, setStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
 
   useEffect(() => {
-    fetchItems();
-  }, [activeTab]);
+    const checkAuth = async () => {
+      if (!auth?.currentUser || !db) {
+        // If not logged in yet, wait or deny
+        if (auth?.currentUser === null) setIsAuthorized(false);
+        return;
+      }
+      
+      // Check hardcoded email first (fast)
+      if (isAdmin()) {
+        setIsAuthorized(true);
+        return;
+      }
+
+      // Check Firestore role (slower)
+      try {
+        const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
+        if (userDoc.exists() && userDoc.data().role === 'admin') {
+          setIsAuthorized(true);
+        } else {
+          setIsAuthorized(false);
+        }
+      } catch (error) {
+        console.error('Error checking admin role:', error);
+        setIsAuthorized(false);
+      }
+    };
+
+    checkAuth();
+  }, [auth?.currentUser]);
+
+  useEffect(() => {
+    if (isAuthorized) {
+      fetchItems();
+    }
+  }, [activeTab, isAuthorized]);
 
   const fetchItems = async () => {
+    if (!db) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try {
       const colRef = collection(db, activeTab);
@@ -31,6 +69,7 @@ export default function Admin() {
   };
 
   const handleDelete = async (id: string) => {
+    if (!db) return;
     if (!window.confirm('Are you sure you want to delete this item?')) return;
     try {
       await deleteDoc(doc(db, activeTab, id));
@@ -43,6 +82,7 @@ export default function Admin() {
   };
 
   const handleBanUser = async (uid: string) => {
+    if (!db) return;
     if (!window.confirm('Are you sure you want to ban this user?')) return;
     try {
       // In a real app, you'd have a 'banned' field or use Firebase Auth Admin SDK
@@ -56,6 +96,7 @@ export default function Admin() {
   };
 
   const handleResolveReport = async (id: string, status: 'resolved' | 'reviewed') => {
+    if (!db) return;
     try {
       await updateDoc(doc(db, 'reports', id), { status });
       setItems(items.map(item => item.id === id ? { ...item, status } : item));
@@ -66,7 +107,18 @@ export default function Admin() {
     }
   };
 
-  if (!isAdmin()) {
+  if (isAuthorized === null) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center p-4">
+        <div className="text-center space-y-4">
+          <Lock size={48} className="mx-auto text-[#00ff00] animate-pulse" />
+          <p className="text-[#666] font-mono text-xs animate-pulse uppercase tracking-[0.2em]">Verifying_Credentials...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isAuthorized === false) {
     return (
       <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center p-4">
         <div className="text-center space-y-4">

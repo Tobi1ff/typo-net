@@ -19,6 +19,11 @@ export default function Home({ user }: HomeProps) {
   const [whoBlockedMe, setWhoBlockedMe] = useState<string[]>([]);
 
   useEffect(() => {
+    if (!db) {
+      setLoading(false);
+      return;
+    }
+
     // Listen to blocks
     const unsubBlocked = getBlockedUsers(user.uid, setBlockedUids);
     const unsubWhoBlockedMe = getUsersWhoBlockedMe(user.uid, setWhoBlockedMe);

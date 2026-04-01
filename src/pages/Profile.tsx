@@ -39,7 +39,7 @@ export default function Profile({ currentUser }: ProfileProps) {
   const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
-    if (!uid) return;
+    if (!uid || !db) return;
 
     const fetchUser = async () => {
       const userRef = doc(db, 'users', uid);

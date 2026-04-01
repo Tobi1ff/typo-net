@@ -12,6 +12,10 @@ export default function Search() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!db) {
+      setLoading(false);
+      return;
+    }
     const fetchUsers = async () => {
       setLoading(true);
       try {

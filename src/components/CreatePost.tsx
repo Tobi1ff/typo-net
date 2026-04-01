@@ -20,6 +20,10 @@ export default function CreatePost({ user }: CreatePostProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!content.trim() && !codeSnippet.trim()) return;
+    if (!db) {
+      alert('Database connection not available.');
+      return;
+    }
 
     setLoading(true);
     try {

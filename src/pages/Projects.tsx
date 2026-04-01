@@ -19,6 +19,10 @@ export default function Projects({ user }: ProjectsProps) {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
+    if (!db) {
+      setLoading(false);
+      return;
+    }
     const q = query(
       collection(db, 'projects'), 
       where('visibility', '==', 'public'),
