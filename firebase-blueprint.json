@@ -1,0 +1,216 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "bio": { "type": "string" },
+        "techStack": { "type": "array", "items": { "type": "string" } },
+        "github": { "type": "string" },
+        "twitter": { "type": "string" },
+        "website": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "displayName", "createdAt"]
+    },
+    "Project": {
+      "title": "Project",
+      "description": "A developer project to showcase",
+      "type": "object",
+      "properties": {
+        "authorUid": { "type": "string" },
+        "authorName": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "repoUrl": { "type": "string" },
+        "demoUrl": { "type": "string" },
+        "techStack": { "type": "array", "items": { "type": "string" } },
+        "thumbnail": { "type": "string" },
+        "likesCount": { "type": "number" },
+        "contributorsCount": { "type": "number" },
+        "githubStats": {
+          "type": "object",
+          "properties": {
+            "stars": { "type": "number" },
+            "forks": { "type": "number" },
+            "language": { "type": "string" },
+            "updatedAt": { "type": "string", "format": "date-time" }
+          }
+        },
+        "visibility": { "type": "string", "enum": ["public", "private"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["authorUid", "title", "description", "createdAt"]
+    },
+    "ProjectFollow": {
+      "title": "ProjectFollow",
+      "description": "A user following a project as a potential contributor",
+      "type": "object",
+      "properties": {
+        "projectUid": { "type": "string" },
+        "userUid": { "type": "string" },
+        "userName": { "type": "string" },
+        "userPhoto": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["projectUid", "userUid", "createdAt"]
+    },
+    "Post": {
+      "title": "Post",
+      "description": "A social post shared by a developer",
+      "type": "object",
+      "properties": {
+        "authorUid": { "type": "string" },
+        "authorName": { "type": "string" },
+        "authorPhoto": { "type": "string" },
+        "content": { "type": "string" },
+        "codeSnippet": { "type": "string" },
+        "language": { "type": "string" },
+        "likesCount": { "type": "number" },
+        "commentsCount": { "type": "number" },
+        "visibility": { "type": "string", "enum": ["public", "private"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["authorUid", "content", "createdAt"]
+    },
+    "Like": {
+      "title": "Like",
+      "description": "A like on a post",
+      "type": "object",
+      "properties": {
+        "postUid": { "type": "string" },
+        "userUid": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["postUid", "userUid", "createdAt"]
+    },
+    "Comment": {
+      "title": "Comment",
+      "description": "A comment on a post",
+      "type": "object",
+      "properties": {
+        "postUid": { "type": "string" },
+        "authorUid": { "type": "string" },
+        "authorName": { "type": "string" },
+        "authorPhoto": { "type": "string" },
+        "content": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["postUid", "authorUid", "content", "createdAt"]
+    },
+    "Follow": {
+      "title": "Follow",
+      "description": "A follow relationship",
+      "type": "object",
+      "properties": {
+        "followerUid": { "type": "string" },
+        "followingUid": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["followerUid", "followingUid", "createdAt"]
+    },
+    "Block": {
+      "title": "Block",
+      "description": "A block relationship",
+      "type": "object",
+      "properties": {
+        "blockerUid": { "type": "string" },
+        "blockedUid": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["blockerUid", "blockedUid", "createdAt"]
+    },
+    "ProjectFollow": {
+      "title": "ProjectFollow",
+      "description": "A user following a project as a contributor",
+      "type": "object",
+      "properties": {
+        "projectUid": { "type": "string" },
+        "userUid": { "type": "string" },
+        "userName": { "type": "string" },
+        "userPhoto": { "type": "string" },
+        "role": { "type": "string", "enum": ["follower", "contributor"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["projectUid", "userUid", "role", "createdAt"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "A notification for a user",
+      "type": "object",
+      "properties": {
+        "recipientUid": { "type": "string" },
+        "senderUid": { "type": "string" },
+        "senderName": { "type": "string" },
+        "type": { "type": "string", "enum": ["like", "comment", "follow"] },
+        "postUid": { "type": "string" },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["recipientUid", "senderUid", "type", "createdAt"]
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "A chat conversation between two users",
+      "type": "object",
+      "properties": {
+        "participants": { "type": "array", "items": { "type": "string" } },
+        "lastMessage": { "type": "string" },
+        "lastMessageAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["participants", "updatedAt"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "An encrypted message in a conversation",
+      "type": "object",
+      "properties": {
+        "conversationId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "recipientId": { "type": "string" },
+        "encryptedText": { "type": "string" },
+        "iv": { "type": "string", "description": "Initialization vector for AES encryption" },
+        "salt": { "type": "string", "description": "Salt for key derivation" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["conversationId", "senderId", "recipientId", "encryptedText", "iv", "salt", "createdAt"]
+    },
+    "Report": {
+      "title": "Report",
+      "description": "A user report on content or another user",
+      "type": "object",
+      "properties": {
+        "targetId": { "type": "string" },
+        "targetType": { "type": "string", "enum": ["post", "project", "user", "comment"] },
+        "reporterUid": { "type": "string" },
+        "reporterName": { "type": "string" },
+        "reason": { "type": "string" },
+        "details": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "reviewed", "resolved"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["targetId", "targetType", "reporterUid", "reason", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": { "schema": "User", "description": "User profiles" },
+    "/projects/{projectId}": { "schema": "Project", "description": "Developer projects" },
+    "/projects/{projectId}/likes/{likeId}": { "schema": "Like", "description": "Likes on a project" },
+    "/projects/{projectId}/follows/{followId}": { "schema": "ProjectFollow", "description": "Users following a project" },
+    "/posts/{postId}": { "schema": "Post", "description": "Developer posts" },
+    "/posts/{postId}/likes/{likeId}": { "schema": "Like", "description": "Likes on a post" },
+    "/posts/{postId}/comments/{commentId}": { "schema": "Comment", "description": "Comments on a post" },
+    "/follows/{followId}": { "schema": "Follow", "description": "Follow relationships" },
+    "/blocks/{blockId}": { "schema": "Block", "description": "User block relationships" },
+    "/projectFollows/{followId}": { "schema": "ProjectFollow", "description": "Users following projects" },
+    "/notifications/{notificationId}": { "schema": "Notification", "description": "User notifications" },
+    "/conversations/{conversationId}": { "schema": "Conversation", "description": "Chat conversations" },
+    "/conversations/{conversationId}/messages/{messageId}": { "schema": "Message", "description": "Messages in a conversation" },
+    "/reports/{reportId}": { "schema": "Report", "description": "User reports" }
+  }
+}

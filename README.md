@@ -1,11 +1,36 @@
-<div align="center">
+# Typo - Developer Social Community
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+Typo is a social platform for developers to share code, showcase projects, and connect.
 
-  <h1>Built with AI Studio</h2>
+## Hosting on Vercel
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+To host this project on Vercel, follow these steps:
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+1. **Download the project** as a ZIP or export it to GitHub.
+2. **Create a new project on Vercel** and connect your repository.
+3. **Configure Environment Variables**:
+   In the Vercel dashboard, add the following environment variables. You can find these values in your `firebase-applet-config.json` file:
 
-</div>
+   - `VITE_FIREBASE_API_KEY`
+   - `VITE_FIREBASE_AUTH_DOMAIN`
+   - `VITE_FIREBASE_PROJECT_ID`
+   - `VITE_FIREBASE_STORAGE_BUCKET`
+   - `VITE_FIREBASE_MESSAGING_SENDER_ID`
+   - `VITE_FIREBASE_APP_ID`
+   - `VITE_FIREBASE_DATABASE_ID` (This is the `firestoreDatabaseId` field)
+
+4. **Build Settings**:
+   - Framework Preset: `Vite`
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+
+5. **Deploy**: Click deploy and your app will be live!
+
+## Features
+
+- **Real-time Feed**: Share thoughts and code snippets.
+- **Project Showcase**: Highlight your builds with thumbnails and links.
+- **Developer Search**: Find others by name or tech stack.
+- **Notifications**: Stay updated on likes, comments, and follows.
+- **Markdown Support**: Write posts using Markdown.
+- **Syntax Highlighting**: Beautiful code blocks for multiple languages.
