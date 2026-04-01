@@ -28,6 +28,10 @@ export default function App() {
   const { isMobile } = useDevice();
 
   useEffect(() => {
+    if (!auth || !db) {
+      setLoading(false);
+      return;
+    }
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         // Sync user to Firestore
