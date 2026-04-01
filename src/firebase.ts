@@ -3,11 +3,38 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore, getDocFromServer, doc } from 'firebase/firestore';
 import { logger } from './lib/logger';
 
-// Import the Firebase configuration
-import firebaseConfig from '../firebase-applet-config.json';
+// Load config from environment variables or fallback to JSON
+const getFirebaseConfig = () => {
+  const envConfig = {
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
+    firestoreDatabaseId: import.meta.env.VITE_FIREBASE_FIRESTORE_DATABASE_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  };
+
+  if (envConfig.apiKey) {
+    return envConfig;
+  }
+
+  // Use import.meta.glob to optionally load the JSON config if it exists
+  // This prevents build errors when the file is missing (e.g., in production)
+  const configs = import.meta.glob('../firebase-applet-config.json', { eager: true });
+  const configPath = '../firebase-applet-config.json';
+  
+  if (configs[configPath]) {
+    return (configs[configPath] as any).default;
+  }
+
+  return null;
+};
+
+const firebaseConfig = getFirebaseConfig();
 
 // Initialize Firebase SDK
-const app = firebaseConfig.apiKey ? initializeApp(firebaseConfig) : null;
+const app = firebaseConfig?.apiKey ? initializeApp(firebaseConfig) : null;
 export const db = app ? getFirestore(app, firebaseConfig.firestoreDatabaseId) : null;
 export const auth = app ? getAuth(app) : null;
 
