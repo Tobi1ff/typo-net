@@ -211,6 +211,7 @@
     "/notifications/{notificationId}": { "schema": "Notification", "description": "User notifications" },
     "/conversations/{conversationId}": { "schema": "Conversation", "description": "Chat conversations" },
     "/conversations/{conversationId}/messages/{messageId}": { "schema": "Message", "description": "Messages in a conversation" },
-    "/reports/{reportId}": { "schema": "Report", "description": "User reports" }
+    "/reports/{reportId}": { "schema": "Report", "description": "User reports" },
+    "/test/connection": { "schema": "object", "description": "Connection test document" }
   }
 }

@@ -14,13 +14,16 @@ service cloud.firestore {
 
     function isAdmin() {
       return isAuthenticated() && 
-        (request.auth.token.email == "bresleydimpho@gmail.com" || 
-         request.auth.token.email == "bresley6@gmail.com") && 
-        request.auth.token.email_verified == true;
+        ((request.auth.token.email == "bresleydimpho@gmail.com" || 
+          request.auth.token.email == "bresley6@gmail.com") && 
+         request.auth.token.email_verified == true) ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin');
     }
 
     function isNotBanned() {
       return !isAuthenticated() || 
+        !exists(/databases/$(database)/documents/users/$(request.auth.uid)) ||
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role != 'banned';
     }
 
@@ -174,6 +177,10 @@ service cloud.firestore {
       allow read: if isAdmin();
       allow create: if isAuthenticated() && isNotBanned() && isValidReport(request.resource.data) && request.resource.data.reporterUid == request.auth.uid;
       allow update, delete: if isAdmin();
+    }
+
+    match /test/connection {
+      allow read: if true;
     }
   }
 }
